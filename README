@@ -1,0 +1,9 @@
+
+History zimlet:
+
+Integrate some basic features of History zimlet with zimbra.
+
+* Store the recipient mail move event, mail delivery event, mail delete event.
+* Show history of sent email.
+* Print the mail history data
+* Show external mail history data also.

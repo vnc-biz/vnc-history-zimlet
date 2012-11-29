@@ -1,0 +1,16 @@
+<!--
+	http://www.vnc.biz 
+	Copyright 2012, VNC - Virtual Network Consult GmbH
+	Released under GPL Licenses. 
+-->
+<zimlet name="@ZIMLET_NAME@" version="@ZIMLET_VERSION@" label="${msg.zimletLabel}" description="${msg.zimletDescription} (@ZIMLET_VERSION@)">
+	<include>biz_vnc_lightweight_history.js</include>
+	<includeCSS>lightweightmailhistory.css</includeCSS>
+	<handlerObject>biz_vnc_lightweight_history_HandlerObject</handlerObject>
+	<resource>submit_please_wait.gif</resource>
+	<zimletPanelItem label="${msg.mailHistory}"  icon="zimbraIcon">
+		<toolTipText>${msg.zimlettooltip}</toolTipText>
+		<dragSource type="ZmConv" />
+		<dragSource type="ZmMailMsg" />
+	</zimletPanelItem>
+</zimlet>
