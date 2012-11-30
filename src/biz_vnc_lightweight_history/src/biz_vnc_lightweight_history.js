@@ -26,10 +26,6 @@ biz_vnc_lightweight_history_HandlerObject.prototype.doDrop = function(droppedIte
 	this.animationDialog = new ZmDialog({view:this.animation, parent:this.getShell(),standardButtons:[DwtDialog.NO_BUTTONS]});
 	this.animationDialog.popup();
 	/*  End of Animation Loading  */
-	temp="";
-    folderTree="";
-    subject=""
-    var tmp="";
     if(droppedItem instanceof Array) {
 		this.animationDialog.popdown();
 		var msg =  appCtxt.getMsgDialog();
@@ -47,23 +43,30 @@ biz_vnc_lightweight_history_HandlerObject.prototype.doDrop = function(droppedIte
 };
 
 biz_vnc_lightweight_history_HandlerObject.prototype._loadCallBack=function(response){
-    mid = response.messageId;
-    subject=response.subject;
-    fromAddr=response.getAddress(AjxEmailAddress.FROM);
-    messageID=mid.substr(1,mid.length-2);
+    var mid = response.messageId;
+    var subject=response.subject;
+    var fromAddr=response.getAddress(AjxEmailAddress.FROM);
+    var messageID=mid.substr(1,mid.length-2);
     var acc=appCtxt.getActiveAccount();
 	folderTree=appCtxt.getFolderTree(acc);
     this.pView = new DwtComposite(this.getShell());
     this.pView.setSize("650", "350");
     this.pView.getHtmlElement().style.overflow = "auto";
-    this.pView.getHtmlElement().innerHTML = this._createDialogView(temp,folderTree,subject,fromAddr.address,appCtxt.get(ZmSetting.USERNAME));
+	if(fromAddr!=null || messageID !=null){
+    	this.pView.getHtmlElement().innerHTML = this._createDialogView(messageID,folderTree,subject,fromAddr.address,appCtxt.get(ZmSetting.USERNAME));
+	}else{
+		var msg =  appCtxt.getMsgDialog();
+        msg.setMessage(this.getMessage("error_drag"),DwtMessageDialog.CRITICAL_STYLE,this.getMessage("alert"));
+        msg.popup();	
+		return;
+	}
     this.pbDialog = new ZmDialog({title:biz_vnc_lightweight_history.mailHistory, view:this.pView, parent:this.getShell(), standardButtons:[DwtDialog.OK_BUTTON,DwtDialog.DISMISS_BUTTON]});
     this.pbDialog.getButton(DwtDialog.OK_BUTTON).setText(ZmMsg.print);
     if(fromAddr.address != appCtxt.get(ZmSetting.USERNAME)){
         this.isPrintEnabled = false;
     }
     sender=appCtxt.get(ZmSetting.USERNAME);
-    this.pbDialog.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(this, this._printBtnListener,fromAddr.address));
+    this.pbDialog.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(this, this._printBtnListener,[fromAddr.address,sender,subject,messageID]));
     this.pbDialog.setButtonListener(DwtDialog.DISMISS_BUTTON, new AjxListener(this, this._okBtnListener));
 	if(this.isPrintEnabled){
         this.pbDialog.getButton(DwtDialog.OK_BUTTON).setEnabled(true,true);
@@ -74,7 +77,7 @@ biz_vnc_lightweight_history_HandlerObject.prototype._loadCallBack=function(respo
     this.pbDialog.popup();
 }
 
-biz_vnc_lightweight_history_HandlerObject.prototype._createDialogView = function(msgID,fTree,s,from,sender) {
+biz_vnc_lightweight_history_HandlerObject.prototype._createDialogView = function(messageID,fTree,s,from,sender) {
     if(s == undefined){
         s=biz_vnc_lightweight_history.noSubject;
     }
@@ -160,7 +163,7 @@ biz_vnc_lightweight_history_HandlerObject.prototype._handleConvMsgs = function(c
     var msgs = conv.msgs.getArray();
 };
 
-biz_vnc_lightweight_history_HandlerObject.prototype._printBtnListener= function(from){
+biz_vnc_lightweight_history_HandlerObject.prototype._printBtnListener= function(from,sender,subject,messageID){
     jspUrl=this.getResource("lightweightmailprint.jsp?s="+subject+"&from="+from+"&mainsender="+sender + "&msgid="+messageID+"&locale=" + appCtxt.getSettings().get(ZmSetting.LOCALE_NAME));
 	window.open(jspUrl, "mywindow","menubar=yes,location=no,resizable=yes,scrollbars=yes,status=yes,width=500,height=500");
 }
