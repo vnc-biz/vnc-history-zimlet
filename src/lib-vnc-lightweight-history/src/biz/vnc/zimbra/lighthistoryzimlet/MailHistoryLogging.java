@@ -202,16 +202,16 @@ for(String receive:receiverdata) {
 					String moveId = strLine.split(":")[4];
 					String receiver = strLine.split("]")[1].split("=")[1].split(";")[0];
 					moveId = moveId.substring(0,moveId.length()-1).trim();
-					String moveMessageId=DataBaseUtil.getMsgId(moveId,receiver);
+					String messageId=DataBaseUtil.getMsgId(moveId,receiver);
 					String folderName = strLine.split("Folder")[1].split("\\(")[0].trim();
 					ZLog.info("biz_vnc_lightweight_history", "Moving to : "+folderName);
-					ZLog.info("biz_vnc_lightweight_history", "message_id : "+moveMessageId);
+					ZLog.info("biz_vnc_lightweight_history", "message_id : "+messageId);
 					ZLog.info("biz_vnc_lightweight_history", "small_id : "+moveId);
 					ZLog.info("biz_vnc_lightweight_history", "info_id : "+moveinfoid);
 					ZLog.info("biz_vnc_lightweight_history", "Receiver : "+receiver);
 					ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.MOVE);
-					if(moveMessageId!=null) {
-						DataBaseUtil.writeMoveHistory(moveMessageId, "", receiver, MailHistoryLogging.MOVE, moveId, moveinfoid,folderName);
+					if(!messageId.equals("")) {
+						DataBaseUtil.writeMoveHistory(messageId, "", receiver, MailHistoryLogging.MOVE, moveId, moveinfoid,folderName);
 					}
 				}
 
@@ -220,16 +220,16 @@ for(String receive:receiverdata) {
 					String moveId = strLine.split(":")[4];
 					String receiver = strLine.split("]")[1].split("=")[1].split(";")[0];
 					moveId = moveId.substring(0,moveId.length()-1).trim();
-					String moveMessageId=DataBaseUtil.getMsgId(moveId,receiver);
+					String messageId=DataBaseUtil.getMsgId(moveId,receiver);
 					String folderName = strLine.split("Folder")[1].split("\\(")[0].trim();
 					ZLog.info("biz_vnc_lightweight_history", "Moving to : "+folderName);
-					ZLog.info("biz_vnc_lightweight_history", "message_id : "+moveMessageId);
+					ZLog.info("biz_vnc_lightweight_history", "message_id : "+messageId);
 					ZLog.info("biz_vnc_lightweight_history", "small_id : "+moveId);
 					ZLog.info("biz_vnc_lightweight_history", "info_id : "+moveinfoid);
 					ZLog.info("biz_vnc_lightweight_history", "Receiver : "+receiver);
 					ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.MOVE);
-					if(moveMessageId!=null) {
-						DataBaseUtil.writeMoveHistory(moveMessageId, "", receiver, MailHistoryLogging.MOVE, moveId, moveinfoid,folderName);
+					if(!messageId.equals("")) {
+						DataBaseUtil.writeMoveHistory(messageId, "", receiver, MailHistoryLogging.MOVE, moveId, moveinfoid,folderName);
 					}
 				}
 
@@ -238,16 +238,16 @@ for(String receive:receiverdata) {
 					String moveId = strLine.split(":")[4];
 					String receiver = strLine.split("]")[1].split("=")[1].split(";")[0];
 					moveId = moveId.substring(0,moveId.length()-1).trim();
-					String moveMessageId=DataBaseUtil.getMsgId(moveId,receiver);
+					String messageId=DataBaseUtil.getMsgId(moveId,receiver);
 					String folderName = strLine.split("Folder")[1].split("\\(")[0].trim();
 					ZLog.info("biz_vnc_lightweight_history", "Moving to : "+folderName);
-					ZLog.info("biz_vnc_lightweight_history", "message_id : "+moveMessageId);
+					ZLog.info("biz_vnc_lightweight_history", "message_id : "+messageId);
 					ZLog.info("biz_vnc_lightweight_history", "small_id : "+moveId);
 					ZLog.info("biz_vnc_lightweight_history", "info_id : "+moveinfoid);
 					ZLog.info("biz_vnc_lightweight_history", "Receiver : "+receiver);
 					ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.MOVE);
-					if(moveMessageId!=null) {
-						DataBaseUtil.writeMoveHistory(moveMessageId, "", receiver, MailHistoryLogging.MOVE, moveId, moveinfoid,folderName);
+					if(!messageId.equals("")) {
+						DataBaseUtil.writeMoveHistory(messageId, "", receiver, MailHistoryLogging.MOVE, moveId, moveinfoid,folderName);
 					}
 				}
 
