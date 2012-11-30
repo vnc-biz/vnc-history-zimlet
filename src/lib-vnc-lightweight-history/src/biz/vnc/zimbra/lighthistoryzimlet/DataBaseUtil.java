@@ -38,7 +38,7 @@ public class DataBaseUtil {
 				toLocal = to.split("@")[0];
 				toDomain = to.split("@")[1];
 			}
-			if(!movingmessageId.equals("")) {
+			if(!movingId.equals("")) {
 				movingmessageId = movingId;
 			}
 			if(!movinginfoId.equals("")) {
