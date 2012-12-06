@@ -15,13 +15,15 @@ import com.zimbra.cs.zclient.ZMailbox;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.account.Domain;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MailHistoryLogging {
 
 	public static final String DELIVERED = "1";
 	public static final String MOVE = "2";
 	public static final String DELETE = "3";
-	public static Thread internalthread = null,externalthread=null;
+	public static Thread internalthread = null,externalthread=null,availablethread=null;
 	public static FileInputStream fstream=null,filestream=null;
 	public static SoapProvisioning provisioning;
 
@@ -32,6 +34,7 @@ public class MailHistoryLogging {
 			filestream = new FileInputStream("/var/log/zimbra.log");
 			internalthread = new Thread(new RecipientExternalMailHistoryLogging(filestream));
 			externalthread = new Thread(new RecipientInternalMailHistoryLogging(fstream));
+			availablethread = new Thread(new ThreadAvailable(externalthread,internalthread));
 			Options options = new Options();
 			options.setLocalConfigAuth(true);
 			provisioning = new SoapProvisioning(options);
@@ -41,6 +44,7 @@ public class MailHistoryLogging {
 
 		internalthread.start();
 		externalthread.start();
+		availablethread.start();
 	}
 
 	public static String getDataFromBracket(String name) {
@@ -96,6 +100,10 @@ class RecipientExternalMailHistoryLogging extends Thread {
 for(String receiver : receivers.split(",")) {
 						receiver = MailHistoryLogging.getDataFromBracket(receiver);
 						if(isExternalMail(receiver)) {
+							ZLog.info("biz_vnc_lightweight_history", "External Mail Deliver Event");
+							ZLog.info("biz_vnc_lightweight_history", "Sender : "+sender);
+							ZLog.info("biz_vnc_lightweight_history", "External Receiver : "+receiver);
+							ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.DELIVERED);
 							DataBaseUtil.writeHistory(message_id, sender, receiver, MailHistoryLogging.DELIVERED,"","");
 						}
 					}
@@ -161,7 +169,7 @@ class RecipientInternalMailHistoryLogging extends Thread {
 			String senderName=null;
 			String receiverName=null;
 			while ((strLine = br.readLine()) != null)  {
-
+				ZLog.info("biz_vnc_lightweight_history", "Read   mailbox.log    file ");
 				if(strLine.contains("lmtp - Delivering")) {
 					String senderdata[] = strLine.split(",");
 for(String sender:senderdata) {
@@ -276,4 +284,60 @@ for(String receive:receiverdata) {
 			ZLog.err("biz_vnc_lightweight_history", "Error while getting Internal Mail Event from Log file", e);
 		}
 	}
+}
+
+class ThreadAvailable extends Thread {
+	Thread externalthread=null, internalthread=null;
+	Timer timer = new Timer();
+	public ThreadAvailable(Thread availableexternalthread,Thread availableinternalthread) {
+		externalthread=availableexternalthread;
+		internalthread=availableinternalthread;
+	}
+
+	public void run() {
+		while (true) {
+			try {
+				availableThread();
+				scheduleThread();
+				Thread.sleep(2000);
+				continue;
+			} catch (Exception e) {
+				ZLog.err("biz_vnc_lightweight_history", "Error in run method while ThreadAvailable", e);
+			}
+		}
+	}
+
+	public void scheduleThread() {
+		long delay =  18000000;
+		try {
+			Timer timer = new Timer();
+			ZLog.info("biz_vnc_lightweight_history", "scheduleThread method is called");
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					ZLog.info("biz_vnc_lightweight_history", "scheduleThread is called and restart the both the thread");
+					externalthread.interrupt();
+					internalthread.interrupt();
+					externalthread.start();
+					internalthread.start();
+				}
+			}, delay);
+		} catch(Exception e) {
+			ZLog.err("biz_vnc_lightweight_history", "Error in scheduleThread method", e);
+		}
+	}
+	public void availableThread() {
+		try {
+			if(!externalthread.isAlive()) {
+				externalthread.start();
+			}
+			if(!internalthread.isAlive()) {
+				internalthread.start();
+			}
+			ZLog.info("biz_vnc_lightweight_history","ThreadAvailable Check InternalThread isAlive : "+internalthread.isAlive() +"   ExternalThread isAlive : "+externalthread.isAlive());
+		} catch(Exception e) {
+			ZLog.err("biz_vnc_lightweight_history", "Error in availableThread method while check availability of the thread", e);
+		}
+	}
+
 }
