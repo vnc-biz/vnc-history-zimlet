@@ -1,5 +1,5 @@
 VERSION=1.0.0
-PACKAGE=history-zimlet-to-gallery
+PACKAGE=vnc-history-zimlet
 MAINTAINER=Enrico Weigelt <enrico.weigelt@vnc.biz>
 SECTION=base
 ARCHITECTURE=All
