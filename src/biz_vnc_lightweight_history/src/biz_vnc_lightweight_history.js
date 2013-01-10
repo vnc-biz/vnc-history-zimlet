@@ -13,6 +13,8 @@ biz_vnc_lightweight_history_HandlerObject.prototype.init = function() {
 	AjxPackage.require("vnc.json.json2");
     AjxPackage.require("vnc.json.json-minified");
 	var param = [];
+	var urldata = "/service/zimlet/biz_vnc_lightweight_history/historyzimletmonitoring.jsp";
+    var responsedata=AjxRpc.invoke(param.join("&"), urldata, null, null, false);
 	var url = "/service/zimlet/biz_vnc_lightweight_history/threadhandle.jsp";
 	var response=AjxRpc.invoke(param.join("&"), url, null, null, false);
 };
