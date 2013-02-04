@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import biz.vnc.zimbra.util.JSPUtil;
 import biz.vnc.zimbra.util.ZLog;
 import com.zimbra.cs.account.soap.SoapProvisioning.Options;
-import com.zimbra.cs.zclient.ZMailbox;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.account.Domain;
 import java.util.List;
@@ -207,7 +206,7 @@ for(String receive:receiverdata) {
 
 				if(strLine.contains("mailop - Moving Conversation")) {
 					String moveinfoid = strLine.split(",")[1].split("INFO")[0];
-					String moveId = strLine.split(":")[4];
+					String moveId = strLine.split("Affected message ids:")[1];
 					String receiver = strLine.split("]")[1].split("=")[1].split(";")[0];
 					moveId = moveId.substring(0,moveId.length()-1).trim();
 					String messageId=DataBaseUtil.getMsgId(moveId,receiver);
@@ -225,7 +224,7 @@ for(String receive:receiverdata) {
 
 				if(strLine.contains("mailop - Moving Message")) {
 					String moveinfoid = strLine.split(",")[1].split("INFO")[0];
-					String moveId = strLine.split(":")[4];
+					String moveId = strLine.split("Affected message ids:")[1];
 					String receiver = strLine.split("]")[1].split("=")[1].split(";")[0];
 					moveId = moveId.substring(0,moveId.length()-1).trim();
 					String messageId=DataBaseUtil.getMsgId(moveId,receiver);
@@ -243,7 +242,7 @@ for(String receive:receiverdata) {
 
 				if(strLine.contains("mailop - Moving VirtualConversation")) {
 					String moveinfoid = strLine.split(",")[1].split("INFO")[0];
-					String moveId = strLine.split(":")[4];
+					String moveId = strLine.split("Affected message ids:")[1];
 					String receiver = strLine.split("]")[1].split("=")[1].split(";")[0];
 					moveId = moveId.substring(0,moveId.length()-1).trim();
 					String messageId=DataBaseUtil.getMsgId(moveId,receiver);
