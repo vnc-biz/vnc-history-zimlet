@@ -170,14 +170,11 @@ class RecipientInternalMailHistoryLogging extends Thread {
 			while ((strLine = br.readLine()) != null)  {
 				ZLog.info("biz_vnc_lightweight_history", "Read   mailbox.log    file ");
 				if(strLine.contains("lmtp - Delivering")) {
-					String senderdata[] = strLine.split(",");
-for(String sender:senderdata) {
-						if(sender.contains("sender")) {
-							senderName = sender.split("=")[1];
-						}
-						if(sender.contains("msgid")) {
-							msgId = MailHistoryLogging.getDataFromBracket(sender.split("=")[1]);
-						}
+					if(strLine.contains("sender")) {
+						senderName = strLine.split("msgid=")[0].split("sender=")[1].split(",")[0].trim();
+					}
+					if(strLine.contains("msgid")) {
+						msgId = MailHistoryLogging.getDataFromBracket(strLine.split("msgid=")[1]);
 					}
 				}
 
