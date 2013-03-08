@@ -84,28 +84,36 @@ class RecipientExternalMailHistoryLogging extends Thread {
 			String receiverName=null;
 			String message_id = null;
 			String strLine;
+			String receivers = null;
+			String sender = null;
 			while ((strLine = br.readLine()) != null)  {
 				String messageId =null;
-				String receivers = null;
-				String sender = null;
-				if(strLine.contains("FWD via SMTP")) {
-					receivers = strLine.substring(strLine.indexOf("->"),strLine.indexOf(",BODY"));
-					sender = MailHistoryLogging.getDataFromBracket(strLine.split("->")[0].split(":")[4]);
+				if(strLine.contains("FWD")) {
+					receivers = strLine.substring(strLine.indexOf("->")+2,strLine.indexOf(",BODY")).trim();
+					sender = strLine.split("->")[0].split("<")[1].split(">")[0];
+					ZLog.info("biz_vnc_lightweight_history", "Receivers : "+receivers);
+					ZLog.info("biz_vnc_lightweight_history", "sender : "+sender);
 				}
-				if(strLine.contains("message-id")) {
-					message_id=MailHistoryLogging.getDataFromBracket(strLine.split("=")[1]);
+				if(strLine.contains("Message-ID")) {
+					message_id=MailHistoryLogging.getDataFromBracket(strLine.split("Message-ID:")[1].trim());
+					ZLog.info("biz_vnc_lightweight_history", "msgid : "+message_id);
 				}
 				if(message_id!=null && receivers!=null) {
+					ZLog.info("biz_vnc_lightweight_history", "Receiver--> : "+receivers+"msgid-->"+message_id);
 for(String receiver : receivers.split(",")) {
-						receiver = MailHistoryLogging.getDataFromBracket(receiver);
+						receiver = MailHistoryLogging.getDataFromBracket(receivers);
 						if(isExternalMail(receiver)) {
 							ZLog.info("biz_vnc_lightweight_history", "External Mail Deliver Event");
 							ZLog.info("biz_vnc_lightweight_history", "Sender : "+sender);
 							ZLog.info("biz_vnc_lightweight_history", "External Receiver : "+receiver);
 							ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.DELIVERED);
+							ZLog.info("biz_vnc_lightweight_history", "Message_id : "+message_id);
 							DataBaseUtil.writeHistory(message_id, sender, receiver, MailHistoryLogging.DELIVERED,"","");
 						}
 					}
+					message_id=null;
+					receivers=null;
+					sender=null;
 				}
 			}
 		} catch(Exception e) {
