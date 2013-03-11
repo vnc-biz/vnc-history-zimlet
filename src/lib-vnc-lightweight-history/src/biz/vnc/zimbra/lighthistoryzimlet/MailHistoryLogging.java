@@ -101,7 +101,7 @@ class RecipientExternalMailHistoryLogging extends Thread {
 				if(message_id!=null && receivers!=null) {
 					ZLog.info("biz_vnc_lightweight_history", "Receiver--> : "+receivers+"msgid-->"+message_id);
 for(String receiver : receivers.split(",")) {
-						receiver = MailHistoryLogging.getDataFromBracket(receivers);
+						receiver = MailHistoryLogging.getDataFromBracket(receiver);
 						if(isExternalMail(receiver)) {
 							ZLog.info("biz_vnc_lightweight_history", "External Mail Deliver Event");
 							ZLog.info("biz_vnc_lightweight_history", "Sender : "+sender);
