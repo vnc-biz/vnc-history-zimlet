@@ -91,16 +91,25 @@ class RecipientExternalMailHistoryLogging extends Thread {
 				if(strLine.contains("FWD")) {
 					receivers = strLine.substring(strLine.indexOf("->")+2,strLine.indexOf(",BODY")).trim();
 					sender = strLine.split("->")[0].split("<")[1].split(">")[0];
-					ZLog.info("biz_vnc_lightweight_history", "Receivers : "+receivers);
+					senderName = sender.split("@")[1];
+for(String rece : receivers.split(",")) {
+						if(rece.equals(senderName)) {
+							receiverName=null;
+						} else {
+							receiverName = strLine.substring(strLine.indexOf("->")+2,strLine.indexOf(",BODY")).trim();
+						}
+					}
+					ZLog.info("biz_vnc_lightweight_history", "Receivers : "+receiverName);
 					ZLog.info("biz_vnc_lightweight_history", "sender : "+sender);
 				}
 				if(strLine.contains("Message-ID")) {
 					message_id=MailHistoryLogging.getDataFromBracket(strLine.split("Message-ID:")[1].trim());
 					ZLog.info("biz_vnc_lightweight_history", "msgid : "+message_id);
 				}
-				if(message_id!=null && receivers!=null) {
-					ZLog.info("biz_vnc_lightweight_history", "Receiver--> : "+receivers+"msgid-->"+message_id);
-for(String receiver : receivers.split(",")) {
+				if(message_id!=null && receiverName!=null) {
+					ZLog.info("biz_vnc_lightweight_history", "Receiver--> : "+receiverName+"msgid-->"+message_id);
+for(String receiver : receiverName.split(",")) {
+
 						receiver = MailHistoryLogging.getDataFromBracket(receiver);
 						if(isExternalMail(receiver)) {
 							ZLog.info("biz_vnc_lightweight_history", "External Mail Deliver Event");
@@ -112,7 +121,7 @@ for(String receiver : receivers.split(",")) {
 						}
 					}
 					message_id=null;
-					receivers=null;
+					receiverName=null;
 					sender=null;
 				}
 			}
