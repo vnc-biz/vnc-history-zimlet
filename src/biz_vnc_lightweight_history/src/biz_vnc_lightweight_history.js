@@ -173,3 +173,61 @@ biz_vnc_lightweight_history_HandlerObject.prototype._printBtnListener= function(
 biz_vnc_lightweight_history_HandlerObject.prototype._okBtnListener= function(){
     this.pbDialog.popdown();
 }
+
+
+/* Right Click Menu */
+
+
+biz_vnc_lightweight_history_HandlerObject.prototype.onParticipantActionMenuInitialized = function(controller, menu) {
+    this.onActionMenuInitialized(controller, menu);
+};
+
+biz_vnc_lightweight_history_HandlerObject.prototype.onActionMenuInitialized = function(controller, menu) {
+    this.addMenuButton(controller, menu);
+};
+
+biz_vnc_lightweight_history_HandlerObject.HIST_ID="view_history";
+
+biz_vnc_lightweight_history_HandlerObject.prototype.addMenuButton = function(controller, menu) {
+    var ID = biz_vnc_lightweight_history_HandlerObject.HIST_ID;
+    var btnName=this.getMessage("history_name");
+    var btnTooltip=this.getMessage("view_history_tooltip");
+    if (!menu.getMenuItem(ID)) {
+        var op = {
+            id : ID,
+            text : btnName,
+            tooltip: btnTooltip,
+			image: "history_zimlet"
+        };
+        var opDesc = ZmOperation.defineOperation(null, op);
+        menu.addOp(ID, 1000);// add the button at the bottom
+        menu.addSelectionListener(ID, new AjxListener(this,this._menuButtonListener, controller));
+    }
+};
+
+biz_vnc_lightweight_history_HandlerObject.prototype._menuButtonListener = function(controller) {
+	/* Animation  loading*/
+    this.animation = new DwtComposite(this.getShell());
+    this.animation.setSize("50", "50");
+    this.animation.getHtmlElement().innerHTML =this._animationDialogView();
+    this.animationDialog = new ZmDialog({view:this.animation, parent:this.getShell(),standardButtons:[DwtDialog.NO_BUTTONS]});
+    this.animationDialog.popup();
+    /*  End of Animation Loading  */
+	var con=appCtxt.getCurrentController();
+    droppedItem = controller.getCurrentView().getDnDSelection();
+
+   /* if(droppedItem instanceof Array) {
+        this.animationDialog.popdown();
+        var msg =  appCtxt.getMsgDialog();
+        msg.setMessage(this.getMessage("warning"),DwtMessageDialog.WARNING_STYLE,this.getMessage("alert"));
+        msg.popup();
+    }else{*/
+        var obj = droppedItem.srcObj ? droppedItem.srcObj : droppedItem;
+        if (obj.type == "CONV"){
+                myMsg=obj.getFirstHotMsg();
+                myMsg.load({"callback":new AjxCallback(this,this._loadCallBack,[myMsg])});
+        }else if(obj.type == "MSG"){
+                obj.load({"callback":new AjxCallback(this,this._loadCallBack,[obj])});
+        }
+};
+              

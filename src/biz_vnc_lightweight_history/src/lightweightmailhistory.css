@@ -63,3 +63,10 @@ table.lightweighthistorygridtable tr.even td
 	background-color:#FEFEF2;
 	text-align:center;
 }
+
+.Imghistory_zimlet
+{
+    background:url(history_zimlet.png) no-repeat 0 0;
+    width:16px;
+    height:16px;
+}

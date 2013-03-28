@@ -8,6 +8,7 @@
 	<includeCSS>lightweightmailhistory.css</includeCSS>
 	<handlerObject>biz_vnc_lightweight_history_HandlerObject</handlerObject>
 	<resource>submit_please_wait.gif</resource>
+	<resource>history_zimlet.png</resource>
 	<zimletPanelItem label="${msg.mailHistory}"  icon="zimbraIcon">
 		<toolTipText>${msg.zimlettooltip}</toolTipText>
 		<dragSource type="ZmConv" />
