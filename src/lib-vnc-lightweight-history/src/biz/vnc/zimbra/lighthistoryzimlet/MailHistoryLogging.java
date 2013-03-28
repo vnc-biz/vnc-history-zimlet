@@ -68,7 +68,7 @@ class RecipientExternalMailHistoryLogging extends Thread {
 		while (true) {
 			try {
 				getExternalMailEvents();
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 				continue;
 			} catch (Exception e) {
 				ZLog.err("biz_vnc_lightweight_history", "Error in run method while ExternalMailHistoryLogging", e);
@@ -80,17 +80,15 @@ class RecipientExternalMailHistoryLogging extends Thread {
 		try {
 			DataInputStream in = new DataInputStream(filestream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String senderName=null;
-			String receiverName=null;
+			String senderName = null;
+			String receiverName = null;
 			String message_id = null;
-			String strLine;
+			String strLine = null;
 			String receivers = null;
 			String sender = null;
 			while ((strLine = br.readLine()) != null)  {
-				String messageId =null;
-				if(strLine.contains("ESMTP")) {
-					/*receivers = strLine.substring(strLine.indexOf("->")+2,strLine.indexOf(",BODY")).trim();*/
-					receivers = strLine.substring(strLine.indexOf("->")+2,strLine.indexOf("SIZE")).trim();
+				if(strLine.contains("Passed CLEAN")) {
+					receivers = strLine.substring(strLine.indexOf("->")+2,strLine.indexOf(", Queue-ID")).trim();
 					sender = strLine.split("->")[0].split("<")[1].split(">")[0];
 					ZLog.info("biz_vnc_lightweight_history", "Receivers : "+receivers);
 					ZLog.info("biz_vnc_lightweight_history", "sender : "+sender);
@@ -99,11 +97,12 @@ class RecipientExternalMailHistoryLogging extends Thread {
 					message_id=MailHistoryLogging.getDataFromBracket(strLine.split("Message-ID:")[1].trim());
 					ZLog.info("biz_vnc_lightweight_history", "msgid : "+message_id);
 				}
+
 				if(message_id!=null && receivers!=null) {
 					ZLog.info("biz_vnc_lightweight_history", "Receiver--> : "+receivers+"msgid-->"+message_id);
 for(String receiver : receivers.split(",")) {
-
 						String ereceiver = MailHistoryLogging.getDataFromBracket(receiver);
+						ZLog.info("biz_vnc_lightweight_history", "ereceiver : "+ereceiver);
 						if(isExternalMail(ereceiver)) {
 							ZLog.info("biz_vnc_lightweight_history", "External Mail Deliver Event");
 							ZLog.info("biz_vnc_lightweight_history", "Sender : "+sender);
@@ -114,9 +113,10 @@ for(String receiver : receivers.split(",")) {
 						}
 					}
 					message_id=null;
-					receiverName=null;
+					receivers=null;
 					sender=null;
 				}
+
 			}
 		} catch(Exception e) {
 			ZLog.err("biz_vnc_lightweight_history", "Error while getting External Mail Event ", e);
@@ -162,7 +162,7 @@ class RecipientInternalMailHistoryLogging extends Thread {
 		while (true) {
 			try {
 				getInternalMailEvents();
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 				continue;
 			} catch (Exception e) {
 				ZLog.err("biz_vnc_lightweight_history", "Error while  run method in InternalMailHistoryLogging", e);
