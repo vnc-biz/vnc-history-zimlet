@@ -87,14 +87,19 @@ class RecipientExternalMailHistoryLogging extends Thread {
 			String receivers = null;
 			String sender = null;
 			while ((strLine = br.readLine()) != null)  {
-				if(strLine.contains("Passed CLEAN")) {
+				if(strLine.contains("Passed CLEAN")&& strLine.contains("Queue-ID")) {
 					receivers = strLine.substring(strLine.indexOf("->")+2,strLine.indexOf(", Queue-ID")).trim();
 					sender = strLine.split("->")[0].split("<")[1].split(">")[0];
+					message_id=MailHistoryLogging.getDataFromBracket(strLine.split("Message-ID:")[1].trim());
 					ZLog.info("biz_vnc_lightweight_history", "Receivers : "+receivers);
 					ZLog.info("biz_vnc_lightweight_history", "sender : "+sender);
-				}
-				if(strLine.contains("Message-ID")) {
+					ZLog.info("biz_vnc_lightweight_history", "msgid : "+message_id);
+				} else if(strLine.contains("Passed CLEAN")) {
+					receivers = strLine.substring(strLine.indexOf("->")+2,strLine.indexOf(", Message-ID")).trim();
+					sender = strLine.split("->")[0].split("<")[1].split(">")[0];
 					message_id=MailHistoryLogging.getDataFromBracket(strLine.split("Message-ID:")[1].trim());
+					ZLog.info("biz_vnc_lightweight_history", "Receivers : "+receivers);
+					ZLog.info("biz_vnc_lightweight_history", "sender : "+sender);
 					ZLog.info("biz_vnc_lightweight_history", "msgid : "+message_id);
 				}
 
