@@ -214,14 +214,12 @@ biz_vnc_lightweight_history_HandlerObject.prototype._menuButtonListener = functi
     this.animationDialog.popup();
     /*  End of Animation Loading  */
 	var con=appCtxt.getCurrentController();
-    droppedItem = controller.getCurrentView().getDnDSelection();
 
-   /* if(droppedItem instanceof Array) {
-        this.animationDialog.popdown();
-        var msg =  appCtxt.getMsgDialog();
-        msg.setMessage(this.getMessage("warning"),DwtMessageDialog.WARNING_STYLE,this.getMessage("alert"));
-        msg.popup();
-    }else{*/
+	if(ZmCsfeCommand.clientVersion.substring(0,1) == "7") {
+    		droppedItem = controller.getCurrentView().getDnDSelection();
+	} else {
+    		 droppedItem = controller.getListView().getDnDSelection();
+	}
         var obj = droppedItem.srcObj ? droppedItem.srcObj : droppedItem;
         if (obj.type == "CONV"){
                 myMsg=obj.getFirstHotMsg();
