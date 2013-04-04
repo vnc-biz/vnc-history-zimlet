@@ -220,12 +220,24 @@ biz_vnc_lightweight_history_HandlerObject.prototype._menuButtonListener = functi
 	} else {
     		 droppedItem = controller.getListView().getDnDSelection();
 	}
-        var obj = droppedItem.srcObj ? droppedItem.srcObj : droppedItem;
+if (droppedItem instanceof Array){
+        for(var i =0; i < droppedItem.length; i++){
+            var obj = droppedItem[i].srcObj ?  droppedItem[i].srcObj :  droppedItem[i];
+            if (obj.type == "CONV" ) {
+				myMsg=obj.getFirstHotMsg();
+                myMsg.load({"callback":new AjxCallback(this,this._loadCallBack,[myMsg])});
+            } else if (obj.type == "MSG") {
+				obj.load({"callback":new AjxCallback(this,this._loadCallBack,[obj])});
+            }
+        }
+    } else {
+		var obj = droppedItem.srcObj ? droppedItem.srcObj : droppedItem;
         if (obj.type == "CONV"){
                 myMsg=obj.getFirstHotMsg();
                 myMsg.load({"callback":new AjxCallback(this,this._loadCallBack,[myMsg])});
         }else if(obj.type == "MSG"){
                 obj.load({"callback":new AjxCallback(this,this._loadCallBack,[obj])});
         }
+    }
 };
               
