@@ -1,6 +1,6 @@
 /*
 	http://www.vnc.biz
-	Copyright 2012, VNC - Virtual Network Consult GmbH
+	Copyright 2014-TODAY, VNC - Virtual Network Consult AG
     Released under GPL Licenses.
 */
 package biz.vnc.zimbra.lighthistoryzimlet;
