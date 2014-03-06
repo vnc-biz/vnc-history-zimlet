@@ -1,71 +1,60 @@
-table.lightweighthistorygridtable
-{
+table.lightweighthistorygridtable{
 	font-weight:bold;
 	background:#FEFEF2;
 }
 
-table.lightweighthistoryrecord
-{
+table.lightweighthistoryrecord{
 	font-weight:bold;
 	background:#FEFEF2;
 	border:1px solid #c3c3c3;
 }
 
-table.lightweighthistoryrecord tr.d0 td
-{
+table.lightweighthistoryrecord tr.d0 td{
 	background-color:#EBEBEB;
 	text-align:center;
 	border:1px solid #c3c3c3;
 }
 
-table.lightweighthistoryrecord tr.d1 td
-{
+table.lightweighthistoryrecord tr.d1 td{
 	background-color:#FEFEF2;
 	text-align:center;
 	border:1px solid #c3c3c3;
 }
 
-table.lightweighthistoryrecord tr.tr_title td
-{
+table.lightweighthistoryrecord tr.tr_title td{
 	font-weight:bold;
 	background:#aa8877;
 	text-align:center;
 	border:1px solid #c3c3c3;
 }
 
-table.lightweighthistorygridtable tr
-{
+table.lightweighthistorygridtable tr{
 	font-weight:bold;
 	border-style:solid;
 	border-width:1px;
 }
 
-table.lightweighthistorygridtable td
-{
+table.lightweighthistorygridtable td{
 	font-weight:bold;
 }
 
-table.lightweighthistorygridtable tr.tr_title td
-{
+table.lightweighthistorygridtable tr.tr_title td{
 	font-weight:bold;
 	background:#aa8877;
 	text-align:center;
 }
 
-table.lightweighthistorygridtable tr.odd td
-{
+table.lightweighthistorygridtable tr.odd td{
 	background-color:#6EA21A;
 	text-align:center;
 }
 
-table.lightweighthistorygridtable tr.even td
-{
+table.lightweighthistorygridtable tr.even td{
 	background-color:#FEFEF2;
 	text-align:center;
 }
 
-.Imghistory_zimlet
-{
+.Imghistory_zimlet{
     background:url(history_zimlet.png) no-repeat 0 0;
     width:16px;
     height:16px;

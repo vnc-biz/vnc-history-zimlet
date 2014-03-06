@@ -9,5 +9,4 @@
 <%
 	MailHistoryLogging mailhistory = new MailHistoryLogging();
 	out.println("success");
-	
 %>

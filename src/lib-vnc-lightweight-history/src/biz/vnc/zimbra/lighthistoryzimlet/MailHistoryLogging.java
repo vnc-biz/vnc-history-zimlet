@@ -1,7 +1,7 @@
 /*
 	http://www.vnc.biz
 	Copyright 2014-TODAY, VNC - Virtual Network Consult AG
-    Released under GPL Licenses.
+	Released under GPL Licenses.
 */
 package biz.vnc.zimbra.lighthistoryzimlet;
 import java.io.File;
@@ -14,7 +14,6 @@ import com.zimbra.cs.account.Domain;
 import java.util.List;
 
 public class MailHistoryLogging {
-
 	public static final String DELIVERED = "1";
 	public static final String MOVE = "2";
 	public static final String DELETE = "3";
@@ -23,7 +22,6 @@ public class MailHistoryLogging {
 	public static SoapProvisioning provisioning;
 
 	static {
-
 		try{
 			fstream=new File("/opt/zimbra/log/mailbox.log");
 			filestream = new File("/var/log/zimbra.log");
@@ -33,9 +31,12 @@ public class MailHistoryLogging {
 			options.setLocalConfigAuth(true);
 			provisioning = new SoapProvisioning(options);
 		} catch(Exception e) {
-			ZLog.err("biz_vnc_lightweight_history", "Error while static method called", e);
+			ZLog.err(
+			    "biz_vnc_lightweight_history",
+			    "Error while static method called",
+			    e
+			);
 		}
-
 		internalthread.start();
 		externalthread.start();
 	}
@@ -54,6 +55,7 @@ public class MailHistoryLogging {
 class RecipientExternalMailHistoryLogging extends Thread {
 	long filePointer;
 	public static File filestream=null;
+
 	public  RecipientExternalMailHistoryLogging (File fstream) {
 		filestream = fstream;
 		filePointer = filestream.length();
@@ -78,7 +80,11 @@ class RecipientExternalMailHistoryLogging extends Thread {
 				}
 				continue;
 			} catch (Exception e) {
-				ZLog.err("biz_vnc_lightweight_history", "Error in run method while ExternalMailHistoryLogging", e);
+				ZLog.err(
+				    "biz_vnc_lightweight_history",
+				    "Error in run method while ExternalMailHistoryLogging",
+				    e
+				);
 			}
 		}
 	}
@@ -105,12 +111,34 @@ class RecipientExternalMailHistoryLogging extends Thread {
 for(String receiver : receivers.split(",")) {
 					String ereceiver = MailHistoryLogging.getDataFromBracket(receiver);
 					if(isExternalMail(ereceiver)) {
-						ZLog.info("biz_vnc_lightweight_history", "External Mail Deliver Event");
-						ZLog.info("biz_vnc_lightweight_history", "Sender : "+sender);
-						ZLog.info("biz_vnc_lightweight_history", "External Receiver : "+ereceiver);
-						ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.DELIVERED);
-						ZLog.info("biz_vnc_lightweight_history", "Message_id : "+message_id);
-						DataBaseUtil.writeHistory(message_id, sender, ereceiver, MailHistoryLogging.DELIVERED,"","");
+						ZLog.info(
+						    "biz_vnc_lightweight_history",
+						    "External Mail Deliver Event"
+						);
+						ZLog.info(
+						    "biz_vnc_lightweight_history",
+						    "Sender : "+sender
+						);
+						ZLog.info(
+						    "biz_vnc_lightweight_history",
+						    "External Receiver : "+ereceiver
+						);
+						ZLog.info(
+						    "biz_vnc_lightweight_history",
+						    "Event : "+MailHistoryLogging.DELIVERED
+						);
+						ZLog.info(
+						    "biz_vnc_lightweight_history",
+						    "Message_id : "+message_id
+						);
+						DataBaseUtil.writeHistory(
+						    message_id,
+						    sender,
+						    ereceiver,
+						    MailHistoryLogging.DELIVERED,
+						    "",
+						    ""
+						);
 					}
 				}
 				message_id=null;
@@ -118,7 +146,11 @@ for(String receiver : receivers.split(",")) {
 				sender=null;
 			}
 		} catch(Exception e) {
-			ZLog.err("biz_vnc_lightweight_history", "Error while getting External Mail Event ", e);
+			ZLog.err(
+			    "biz_vnc_lightweight_history",
+			    "Error while getting External Mail Event ",
+			    e
+			);
 		}
 	}
 
@@ -133,7 +165,11 @@ for(String receiver : receivers.split(",")) {
 			SoapProvisioning provisioning = new SoapProvisioning(options);
 			alldomains = provisioning.getAllDomains();
 		} catch(Exception e) {
-			ZLog.err("biz_vnc_lightweight_history", "Error while getting Domains List ", e);
+			ZLog.err(
+			    "biz_vnc_lightweight_history",
+			    "Error while getting Domains List ",
+			    e
+			);
 		}
 		for(int i=0; i<alldomains.size(); i++) {
 			if(alldomains.get(i).getName().equals(receiverdomain)) {
@@ -150,11 +186,11 @@ for(String receiver : receivers.split(",")) {
 }
 
 class RecipientInternalMailHistoryLogging extends Thread {
-
 	public static File filestream=null;
 	long filePointer;
 	String msgId = null;
 	String senderName=null;
+
 	public RecipientInternalMailHistoryLogging(File stream) {
 		filestream = stream;
 		filePointer = filestream.length();
@@ -179,7 +215,11 @@ class RecipientInternalMailHistoryLogging extends Thread {
 				}
 				continue;
 			} catch (Exception e) {
-				ZLog.err("biz_vnc_lightweight_history", "Error while  run method in InternalMailHistoryLogging", e);
+				ZLog.err(
+				    "biz_vnc_lightweight_history",
+				    "Error while  run method in InternalMailHistoryLogging",
+				    e
+				);
 			}
 		}
 	}
@@ -196,7 +236,6 @@ class RecipientInternalMailHistoryLogging extends Thread {
 					msgId = MailHistoryLogging.getDataFromBracket(strLine.split("msgid=")[1]);
 				}
 			}
-
 			if(strLine.contains("mailop - Adding Message")) {
 				String receiverdata[] = strLine.split(",");
 for(String receive:receiverdata) {
@@ -208,12 +247,34 @@ for(String receive:receiverdata) {
 						if(msgId !=null) {
 							if(msgId.equals(receivermsgId)) {
 								String smallMessageId = strLine.split("id=")[2].split(",")[0];
-								ZLog.info("biz_vnc_lightweight_history", "smallid : "+smallMessageId);
-								ZLog.info("biz_vnc_lightweight_history", "message_id : "+msgId);
-								ZLog.info("biz_vnc_lightweight_history", "Sender : "+senderName);
-								ZLog.info("biz_vnc_lightweight_history", "Receiver : "+receiverName);
-								ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.DELIVERED);
-								DataBaseUtil.writeHistory(msgId, senderName, receiverName, MailHistoryLogging.DELIVERED,smallMessageId,"");
+								ZLog.info(
+								    "biz_vnc_lightweight_history",
+								    "smallid : "+smallMessageId
+								);
+								ZLog.info(
+								    "biz_vnc_lightweight_history",
+								    "message_id : "+msgId
+								);
+								ZLog.info(
+								    "biz_vnc_lightweight_history",
+								    "Sender : "+senderName
+								);
+								ZLog.info(
+								    "biz_vnc_lightweight_history",
+								    "Receiver : "+receiverName
+								);
+								ZLog.info(
+								    "biz_vnc_lightweight_history",
+								    "Event : "+MailHistoryLogging.DELIVERED
+								);
+								DataBaseUtil.writeHistory(
+								    msgId,
+								    senderName,
+								    receiverName,
+								    MailHistoryLogging.DELIVERED,
+								    smallMessageId,
+								    ""
+								);
 							}
 						}
 					}
@@ -226,17 +287,42 @@ for(String receive:receiverdata) {
 				moveId = moveId.substring(0,moveId.length()-1).trim();
 				String messageId=DataBaseUtil.getMsgId(moveId,receiver);
 				String folderName = strLine.split("Folder")[1].split("\\(")[0].trim();
-				ZLog.info("biz_vnc_lightweight_history", "Moving to : "+folderName);
-				ZLog.info("biz_vnc_lightweight_history", "message_id : "+messageId);
-				ZLog.info("biz_vnc_lightweight_history", "small_id : "+moveId);
-				ZLog.info("biz_vnc_lightweight_history", "info_id : "+moveinfoid);
-				ZLog.info("biz_vnc_lightweight_history", "Receiver : "+receiver);
-				ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.MOVE);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Moving to : "+folderName
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "message_id : "+messageId
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "small_id : "+moveId
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "info_id : "+moveinfoid
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Receiver : "+receiver
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Event : "+MailHistoryLogging.MOVE
+				);
 				if(!messageId.equals("")) {
-					DataBaseUtil.writeMoveHistory(messageId, "", receiver, MailHistoryLogging.MOVE, moveId, moveinfoid,folderName);
+					DataBaseUtil.writeMoveHistory(
+					    messageId,
+					    "",
+					    receiver,
+					    MailHistoryLogging.MOVE,
+					    moveId,
+					    moveinfoid,
+					    folderName
+					);
 				}
 			}
-
 			if(strLine.contains("mailop - Moving Message")) {
 				String moveinfoid = strLine.split(",")[1].split("INFO")[0];
 				String moveId = strLine.split("Affected message ids:")[1];
@@ -244,17 +330,42 @@ for(String receive:receiverdata) {
 				moveId = moveId.substring(0,moveId.length()-1).trim();
 				String messageId=DataBaseUtil.getMsgId(moveId,receiver);
 				String folderName = strLine.split("Folder")[1].split("\\(")[0].trim();
-				ZLog.info("biz_vnc_lightweight_history", "Moving to : "+folderName);
-				ZLog.info("biz_vnc_lightweight_history", "message_id : "+messageId);
-				ZLog.info("biz_vnc_lightweight_history", "small_id : "+moveId);
-				ZLog.info("biz_vnc_lightweight_history", "info_id : "+moveinfoid);
-				ZLog.info("biz_vnc_lightweight_history", "Receiver : "+receiver);
-				ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.MOVE);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Moving to : "+folderName
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "message_id : "+messageId
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "small_id : "+moveId
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "info_id : "+moveinfoid
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Receiver : "+receiver
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Event : "+MailHistoryLogging.MOVE
+				);
 				if(!messageId.equals("")) {
-					DataBaseUtil.writeMoveHistory(messageId, "", receiver, MailHistoryLogging.MOVE, moveId, moveinfoid,folderName);
+					DataBaseUtil.writeMoveHistory(
+					    messageId,
+					    "",
+					    receiver,
+					    MailHistoryLogging.MOVE,
+					    moveId,
+					    moveinfoid,
+					    folderName
+					);
 				}
 			}
-
 			if(strLine.contains("mailop - Moving VirtualConversation")) {
 				String moveinfoid = strLine.split(",")[1].split("INFO")[0];
 				String moveId = strLine.split("Affected message ids:")[1];
@@ -262,39 +373,76 @@ for(String receive:receiverdata) {
 				moveId = moveId.substring(0,moveId.length()-1).trim();
 				String messageId=DataBaseUtil.getMsgId(moveId,receiver);
 				String folderName = strLine.split("Folder")[1].split("\\(")[0].trim();
-				ZLog.info("biz_vnc_lightweight_history", "Moving to : "+folderName);
-				ZLog.info("biz_vnc_lightweight_history", "message_id : "+messageId);
-				ZLog.info("biz_vnc_lightweight_history", "small_id : "+moveId);
-				ZLog.info("biz_vnc_lightweight_history", "info_id : "+moveinfoid);
-				ZLog.info("biz_vnc_lightweight_history", "Receiver : "+receiver);
-				ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.MOVE);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Moving to : "+folderName
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "message_id : "+messageId
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "small_id : "+moveId
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "info_id : "+moveinfoid
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Receiver : "+receiver
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Event : "+MailHistoryLogging.MOVE
+				);
 				if(!messageId.equals("")) {
 					DataBaseUtil.writeMoveHistory(messageId, "", receiver, MailHistoryLogging.MOVE, moveId, moveinfoid,folderName);
 				}
 			}
-
-
 			if(strLine.contains("Deleting items")) {
 				String deletedId = strLine.split(":")[4];
 				deletedId = deletedId.substring(0,deletedId.length()-1).trim();
 				String receiver =strLine.split("]")[1].split("=")[1].split(";")[0];
-				ZLog.info("biz_vnc_lightweight_history", "small ID : "+deletedId);
-				ZLog.info("biz_vnc_lightweight_history", "Receiver : "+receiver);
-				ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.DELETE);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "small ID : "+deletedId
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Receiver : "+receiver
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Event : "+MailHistoryLogging.DELETE
+				);
 				DataBaseUtil.writeDeleteHistory(deletedId,receiver);
 			}
-
 			if(strLine.contains("mailop - Deleting Message")) {
 				String deletedId = strLine.split("id")[2];
 				deletedId = deletedId.substring(1,deletedId.length()-2).trim();
 				String receiver =strLine.split("]")[1].split("=")[1].split(";")[0];
-				ZLog.info("biz_vnc_lightweight_history", "small ID : "+deletedId);
-				ZLog.info("biz_vnc_lightweight_history", "Receiver : "+receiver);
-				ZLog.info("biz_vnc_lightweight_history", "Event : "+MailHistoryLogging.DELETE);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "small ID : "+deletedId
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Receiver : "+receiver
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Event : "+MailHistoryLogging.DELETE
+				);
 				DataBaseUtil.writeDeleteHistory(deletedId,receiver);
 			}
 		} catch(Exception e) {
-			ZLog.err("biz_vnc_lightweight_history", "Error while getting Internal Mail Event from Log file", e);
+			ZLog.err(
+			    "biz_vnc_lightweight_history",
+			    "Error while getting Internal Mail Event from Log file",
+			    e
+			);
 		}
 	}
 }

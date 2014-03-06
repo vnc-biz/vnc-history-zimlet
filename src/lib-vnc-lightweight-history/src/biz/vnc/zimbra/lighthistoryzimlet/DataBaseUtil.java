@@ -1,7 +1,7 @@
 /*
 	http://www.vnc.biz
 	Copyright 2014-TODAY, VNC - Virtual Network Consult AG
-    Released under GPL Licenses.
+	Released under GPL Licenses.
 */
 package biz.vnc.zimbra.lighthistoryzimlet;
 import biz.vnc.zimbra.util.LocalConfig;
@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 import java.sql.Statement;
 
 public class DataBaseUtil {
-
 	synchronized public static void writeHistory(String messageId, String from, String to,String event,String movingId,String movinginfoId) {
 		Connection dbConnection = null;
 		PreparedStatement st=null;
@@ -54,7 +53,6 @@ public class DataBaseUtil {
 			st.setString(5, toDomain);
 			st.setString(6, toLocal);
 			resultSet = st.executeQuery();
-
 			if(!resultSet.next()) {
 				String query = "insert into mail_history_mbox(logtime,message_id,from_domain,from_localpart,to_domain,to_localpart,event,moveingId,movinginfoid,foldername) values(?,?,?,?,?,?,?,?,?,?)";
 				st = dbConnection.prepareStatement(query);
@@ -110,7 +108,6 @@ public class DataBaseUtil {
 			if(!folderName.equals("")) {
 				foldername = folderName;
 			}
-
 			dbConnection = LocalDB.connect(LocalConfig.get().db_name);
 			querydata = "select movinginfoid from mail_history_mbox where message_id= ? and event='"+MailHistoryLogging.MOVE+"' and movinginfoid=? and foldername=?";
 			st = dbConnection.prepareStatement(querydata);
@@ -118,7 +115,6 @@ public class DataBaseUtil {
 			st.setString(2, moveinfoid);
 			st.setString(3,foldername);
 			resultSet = st.executeQuery();
-
 			if(resultSet.next()) {
 				datamovingid= resultSet.getString("movinginfoid");
 				if(!moveinfoid.equals(datamovingid)) {
@@ -176,13 +172,11 @@ public class DataBaseUtil {
 			st.setString(1, msgid);
 			ResultSet resultSet=  st.executeQuery();
 			String messageId="";
-
 			if(resultSet.next()) {
 				messageId = resultSet.getString("message_id");
 				writeHistory(messageId, "", from, MailHistoryLogging.DELETE, msgid,"");
 				ZLog.info("biz_vnc_lightweight_history", "Delete Move event Catched");
 			}
-
 		} catch(Exception e) {
 			ZLog.err("biz_vnc_lightweight_history", "Error while loging into mail history table", e);
 		}

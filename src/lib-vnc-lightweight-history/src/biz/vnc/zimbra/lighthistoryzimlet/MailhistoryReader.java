@@ -1,7 +1,7 @@
 /*
 	http://www.vnc.biz
 	Copyright 2014-TODAY, VNC - Virtual Network Consult AG
-    Released under GPL Licenses.
+	Released under GPL Licenses.
 */
 package biz.vnc.zimbra.lighthistoryzimlet;
 import biz.vnc.zimbra.util.LocalConfig;
@@ -14,7 +14,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class MailhistoryReader {
-
 	private Connection dbConnection=null;
 
 	public String getRecord(String msgId) {
@@ -22,7 +21,7 @@ public class MailhistoryReader {
 		JSONArray jsonArray = new JSONArray();
 		try {
 			dbConnection = LocalDB.connect(LocalConfig.get().db_name);
-			String query="SELECT * FROM mail_log_internal WHERE message_id=?" +
+			String query="SELECT * FROM mail_log_internal WHERE message_id=?"+
 			             "ORDER BY logtime ASC";
 			PreparedStatement statement=dbConnection.prepareStatement(query);
 			statement.setString(1, msgId.trim());
@@ -31,15 +30,26 @@ public class MailhistoryReader {
 			while (resultSet.next()) {
 				JSONObject jsonObject=new JSONObject();
 				jsonObject.put("logtime", resultSet.getString("logtime"));
-				if (resultSet.getString("from_localpart").equals("-") || resultSet.getString("from_domain").equals("-")) {
-					jsonObject.put("from", "-");
+				if (resultSet.getString("from_localpart").equals("-") ||
+				        resultSet.getString("from_domain").equals("-")) {
+					jsonObject.put(
+					    "from",
+					    "-"
+					);
 				} else {
-					jsonObject.put("from", resultSet.getString("from_localpart")+"@"+resultSet.getString("from_domain"));
+					jsonObject.put(
+					    "from",
+					    resultSet.getString("from_localpart")+"@"+resultSet.getString("from_domain")
+					);
 				}
-				if (resultSet.getString("to_localpart").equals("-") || resultSet.getString("to_domain").equals("-")) {
+				if (resultSet.getString("to_localpart").equals("-") ||
+				        resultSet.getString("to_domain").equals("-")) {
 					jsonObject.put("to", "-");
 				} else {
-					jsonObject.put("to", resultSet.getString("to_localpart")+"@"+resultSet.getString("to_domain"));
+					jsonObject.put(
+					    "to",
+					    resultSet.getString("to_localpart")+"@"+resultSet.getString("to_domain")
+					);
 				}
 				jsonObject.put("moveto",resultSet.getString("foldername"));
 				jsonObject.put("event", resultSet.getString("event"));
@@ -49,7 +59,10 @@ public class MailhistoryReader {
 		} catch (Exception e) {
 			ZLog.err("mail-history", "getRecord: database query failed", e);
 		}
-		ZLog.info("biz_vnc_lightweight_history", "Recod Json :: "+storejson.toJSONString());
+		ZLog.info(
+		    "biz_vnc_lightweight_history",
+		    "Recod Json :: "+storejson.toJSONString()
+		);
 		return storejson.toJSONString();
 	}
 }

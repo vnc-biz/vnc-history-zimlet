@@ -1,7 +1,7 @@
 <!--
-	http://www.vnc.biz 
+	http://www.vnc.biz
 	Copyright 2014-TODAY, VNC - Virtual Network Consult AG
-	Released under GPL Licenses. 
+	Released under GPL Licenses.
 -->
 <zimlet name="@ZIMLET_NAME@" version="@ZIMLET_VERSION@" label="${msg.zimletLabel}" description="${msg.zimletDescription} (@ZIMLET_VERSION@)">
 	<include>biz_vnc_lightweight_history.js</include>
