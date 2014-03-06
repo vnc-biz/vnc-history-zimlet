@@ -20,8 +20,11 @@
 <%@ page import = "java.util.Locale" %>
 <%@ page import = "java.io.InputStream" %>
 <%@ page import = "biz.vnc.zimbra.util.JSPUtil" %>
-<% 
-	JSPUtil.nocache(response);
+<%
+	response.setHeader("Cache-Control","no-cache");
+	response.setHeader("Pragma","no-cache");
+	response.setDateHeader("Expires", 0);
+
 	String locale = request.getParameter("locale");
 	String fileName = "/biz_vnc_lightweight_history/biz_vnc_lightweight_history_" + locale + ".properties";
 

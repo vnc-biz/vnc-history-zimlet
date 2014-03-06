@@ -179,8 +179,8 @@ public class DataBaseUtil {
 
 			if(resultSet.next()) {
 				messageId = resultSet.getString("message_id");
-				ZLog.info("biz_vnc_lightweight_history", "Delete Move event Catched");
 				writeHistory(messageId, "", from, MailHistoryLogging.DELETE, msgid,"");
+				ZLog.info("biz_vnc_lightweight_history", "Delete Move event Catched");
 			}
 
 		} catch(Exception e) {

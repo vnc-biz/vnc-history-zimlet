@@ -13,8 +13,6 @@ biz_vnc_lightweight_history_HandlerObject.prototype.init = function() {
 	AjxPackage.require("vnc.json.json2");
     AjxPackage.require("vnc.json.json-minified");
 	var param = [];
-	var urldata = "/service/zimlet/biz_vnc_lightweight_history/historyzimletmonitoring.jsp";
-    var responsedata=AjxRpc.invoke(param.join("&"), urldata, null, null, false);
 	var url = "/service/zimlet/biz_vnc_lightweight_history/threadhandle.jsp";
 	var response=AjxRpc.invoke(param.join("&"), url, null, null, false);
 };
@@ -167,7 +165,7 @@ biz_vnc_lightweight_history_HandlerObject.prototype._handleConvMsgs = function(c
 
 biz_vnc_lightweight_history_HandlerObject.prototype._printBtnListener= function(from,sender,subject,messageID){
     jspUrl=this.getResource("lightweightmailprint.jsp?s="+subject+"&from="+from+"&mainsender="+sender + "&msgid="+messageID+"&locale=" + appCtxt.getSettings().get(ZmSetting.LOCALE_NAME));
-	window.open(jspUrl, "mywindow","menubar=yes,location=no,resizable=yes,scrollbars=yes,status=yes,width=500,height=500");
+	window.open(jspUrl, "","menubar=yes,location=no,resizable=yes,scrollbars=yes,status=yes,width=500,height=500");
 }
 
 biz_vnc_lightweight_history_HandlerObject.prototype._okBtnListener= function(){
