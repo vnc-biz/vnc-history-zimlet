@@ -16,6 +16,7 @@ biz_vnc_lightweight_history_HandlerObject.prototype.init = function() {
 	var param = [];
 	var url = "/service/zimlet/biz_vnc_lightweight_history/threadhandle.jsp";
 	var response = AjxRpc.invoke(param.join("&"), url, null, null, false);
+	this.flag = 0;
 };
 
 biz_vnc_lightweight_history_HandlerObject.prototype.doDrop = function(droppedItem) {
@@ -72,6 +73,10 @@ biz_vnc_lightweight_history_HandlerObject.prototype._loadCallBack = function(res
 			fromAddr.address,
 			appCtxt.get(ZmSetting.USERNAME)
 		);
+		if(this.flag==1){
+			document.getElementById("light_history_mail_for").innerHTML="";
+			document.getElementById("light_history_mail_sender").innerHTML="";
+		}
 	} else {
 		var msg = appCtxt.getMsgDialog();
 		msg.setMessage(
@@ -118,6 +123,7 @@ biz_vnc_lightweight_history_HandlerObject.prototype._loadCallBack = function(res
 }
 
 biz_vnc_lightweight_history_HandlerObject.prototype._createDialogView = function(messageID, fTree, s, from, sender) {
+	this.flag = 0;
 	if (s == undefined) {
 		s = biz_vnc_lightweight_history.noSubject;
 	}
@@ -127,11 +133,11 @@ biz_vnc_lightweight_history_HandlerObject.prototype._createDialogView = function
 	html[i++] = "<table width='98%' align='center' class='lightweighthistorygridtable'>";
 	html[i++] = "<tr>";
 	html[i++] = "<td colspan='4'>";
-	html[i++] = "<h3 style='padding:3px 3px 3px 3px;align:center;'>" + biz_vnc_lightweight_history.mailFor + " '" + s + "'</h3>";
+	html[i++] = "<h3 style='padding:3px 3px 3px 3px;align:center;'><div id='light_history_mail_for' >" + biz_vnc_lightweight_history.mailFor + " '" + s + "'</div></h3>";
 	html[i++] = "</td>";
 	html[i++] = "</tr>";
 	html[i++] = "<tr>";
-	html[i++] = "<td colspan='4'>" + biz_vnc_lightweight_history.sender + " : <b>" + sender + "</b></td>";
+	html[i++] = "<td colspan='4' ><div id='light_history_mail_sender' >" + biz_vnc_lightweight_history.sender + " : <b>" + sender + "</b></div></td>";
 	html[i++] = "</tr>";
 	html[i++] = "<tr>";
 	html[i++] = "<td colspan='4'>";
@@ -146,6 +152,7 @@ biz_vnc_lightweight_history_HandlerObject.prototype._createDialogView = function
 		html[i++] = "<tr>";
 		html[i++] = "<td colspan='4' align='center'><h4>" + biz_vnc_lightweight_history.unauthorized + "</h4></td>";
 		html[i++] = "</tr>";
+		this.flag=1;
 	} else {
 		var jspUrl = this.getResource("lightweightmailhistory.jsp");
 		var response = AjxRpc.invoke(null, jspUrl + "?messageID=" + messageID, null, null, true);
@@ -158,6 +165,7 @@ biz_vnc_lightweight_history_HandlerObject.prototype._createDialogView = function
 				record = mHistory.list.length;
 				if (record == 0) {
 					html[i++] = "<tr><td colspan='4' align='center'><h4>" + biz_vnc_lightweight_history.noResult + "</h4></td></tr>";
+					this.flag=1;
 				} else {
 					for (var j = 0; j < record; j++) {
 						if (j % 2 == 0) {
