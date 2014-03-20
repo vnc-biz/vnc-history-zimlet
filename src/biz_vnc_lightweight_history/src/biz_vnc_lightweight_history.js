@@ -129,7 +129,7 @@ biz_vnc_lightweight_history_HandlerObject.prototype._createDialogView = function
 	}
 	var html = new Array();
 	var i = 0;
-	html[i++] = "<div style='width:100%;height:100%;overflow:scroll;'>";
+	html[i++] = "<div style='width:100%;height:100%;overflow:auto;'>";
 	html[i++] = "<table width='98%' align='center' class='lightweighthistorygridtable'>";
 	html[i++] = "<tr>";
 	html[i++] = "<td colspan='4'>";

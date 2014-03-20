@@ -280,7 +280,7 @@ for(String receive:receiverdata) {
 					}
 				}
 			}
-			if(strLine.contains("mailop - Moving Conversation")) {
+			if(strLine.contains("mailop - Moving Conversation") || strLine.contains("mailop - moving Conversation")) {
 				String moveinfoid = strLine.split(",")[1].split("INFO")[0];
 				String moveId = strLine.split("Affected message ids:")[1];
 				String receiver = strLine.split("]")[1].split("=")[1].split(";")[0];
@@ -366,7 +366,49 @@ for(String receive:receiverdata) {
 					);
 				}
 			}
-			if(strLine.contains("mailop - Moving VirtualConversation")) {
+			if(strLine.contains("mailop - moving Message")) {
+				String moveinfoid = strLine.split(",")[1].split("INFO")[0];
+				String moveId = strLine.split("\\(id=")[1].split("\\) to Folder")[0].trim();
+				String receiver = strLine.split("]")[1].split("=")[1].split(";")[0];
+				String messageId=DataBaseUtil.getMsgId(moveId,receiver);
+				String folderName = strLine.split("Folder")[1].split("\\(")[0].trim();
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Moving to : "+folderName
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "message_id : "+messageId
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "small_id : "+moveId
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "info_id : "+moveinfoid
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Receiver : "+receiver
+				);
+				ZLog.info(
+				    "biz_vnc_lightweight_history",
+				    "Event : "+MailHistoryLogging.MOVE
+				);
+				if(!messageId.equals("")) {
+					DataBaseUtil.writeMoveHistory(
+					    messageId,
+					    "",
+					    receiver,
+					    MailHistoryLogging.MOVE,
+					    moveId,
+					    moveinfoid,
+					    folderName
+					);
+				}
+			}
+			if(strLine.contains("mailop - Moving VirtualConversation") || strLine.contains("mailop - moving VirtualConversation")) {
 				String moveinfoid = strLine.split(",")[1].split("INFO")[0];
 				String moveId = strLine.split("Affected message ids:")[1];
 				String receiver = strLine.split("]")[1].split("=")[1].split(";")[0];
