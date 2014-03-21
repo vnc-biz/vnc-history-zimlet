@@ -23,6 +23,7 @@
 	response.setHeader("Cache-Control","no-cache");
 	response.setHeader("Pragma","no-cache");
 	response.setDateHeader("Expires", 0);
+	response.setContentType("text/html; charset=utf-8");
 	String locale = request.getParameter("locale");
 	String fileName = "/biz_vnc_lightweight_history/biz_vnc_lightweight_history_" + locale + ".properties";
 	InputStream is = null;

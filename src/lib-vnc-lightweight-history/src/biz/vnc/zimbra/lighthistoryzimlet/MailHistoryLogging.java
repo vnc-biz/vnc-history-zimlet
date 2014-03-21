@@ -208,7 +208,7 @@ class RecipientInternalMailHistoryLogging extends Thread {
 					raf.seek(filePointer);
 					String line = null;
 					while ((line = raf.readLine()) != null) {
-						getInternalMailEvents(line);
+						getInternalMailEvents(new String(line.getBytes("ISO-8859-1")));
 					}
 					filePointer = raf.getFilePointer();
 					raf.close();
