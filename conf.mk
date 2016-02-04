@@ -1,6 +1,6 @@
 VERSION=1.0.3.1
 PACKAGE=vnc-history-zimlet
-MAINTAINER=Enrico Weigelt <enrico.weigelt@vnc.biz>
+MAINTAINER=Stefan Sänger <stefan.saenger@vnc.biz>
 SECTION=base
 ARCHITECTURE=All
 PRIORITY=optional
